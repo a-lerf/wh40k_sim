@@ -4,7 +4,7 @@ Created on Mon Mar 15 15:30:17 2021
 
 @author: kanbei
 
-v 0.0.1 
+v 0.1.1 
 """
 
 import streamlit as st
@@ -17,7 +17,7 @@ d_reroll = ['None','Ones','All']
 
 #create streamlit elements on main page
 st.title('Warhammer 40k 9th ed calculator')
-st.write('v 0.0.1')
+st.write('v 0.1.1')
 att_type_select = st.sidebar.selectbox('Select attack type', (att_type))
 
 if att_type_select == att_type[0]:
@@ -25,7 +25,7 @@ if att_type_select == att_type[0]:
 else: 
     skill_label = 'Weapon skill'
     
-num_attackers = st.sidebar.number_input('Number of attacks', min_value = 1, max_value = 10, step = 1)
+num_attackers = st.sidebar.number_input('Number of attacks', min_value = 1, step = 1)
 num_defenders = st.sidebar.number_input('Number of defenders', min_value = 1, max_value = 10, step = 1)
 
 st.header('Attacker')
@@ -229,40 +229,52 @@ num_sim = st.sidebar.number_input('Number of Simulations', min_value = 1, max_va
 
 st.header('Results')
 if st.sidebar.button('Simulate'):
+    if att_type_select == att_type[0]:
     
-    df = sim_attack(num_sim)   
+        df = sim_attack(num_sim)   
+        
+        r_col1, r_col2, r_col3 = st.beta_columns(3)
+        r_col4, r_col5, r_col6 = st.beta_columns(3)
     
-    r_col1, r_col2, r_col3 = st.beta_columns(3)
-    r_col4, r_col5, r_col6 = st.beta_columns(3)
-
-    with r_col1:
-        st.text('Hit rolls')
-        st.pyplot(df['hits'].plot.hist(range = [0,num_attackers]).get_figure(), clear_figure= True)
-        st.text('Average hits: ' + str(df['hits'].mean()))
+        with r_col1:
+            st.text('Hit rolls')
+            st.pyplot(df['hits'].plot.hist(range = [0,num_attackers]).get_figure(), clear_figure= True)
+            st.text('Average hits: ' + str(df['hits'].mean()))
+            
+        with r_col2:
+            st.text('Wound rolls')
+            st.pyplot(df['wounds'].plot.hist(range = [0,num_attackers]).get_figure(), clear_figure= True)
+            st.text('Average wound rolls: ' + str(df['wounds'].mean()))
+    
+        with r_col3:
+            st.text('Save rolls')
+            st.pyplot(df['saves'].plot.hist(range = [0,num_attackers]).get_figure(), clear_figure= True)
+            st.text('Average saves: ' + str(df['saves'].mean()))
+            
+        with r_col4:
+            st.text('Invulnerable save rolls')
+            st.pyplot(df['invul'].plot.hist(range = [0,num_attackers]).get_figure(), clear_figure= True)
+            st.text('Average invul: ' + str(df['invul'].mean()))
+    
+        with r_col5:
+            st.text('Final wounds')
+            st.pyplot(df['final_wounds'].plot.hist(range = [0,num_attackers]).get_figure(), clear_figure= True)
+            st.text('Hits on target: ' + str(df['final_wounds'].mean()))
+            
+        with r_col6:
+            st.text('Damage')
+            st.pyplot(df['damage'].plot.hist(range = [0,num_attackers*a_damage]).get_figure(), clear_figure= True)
+            st.text('Average damage: ' + str(df['damage'].mean()))
+            
+        count_wounds = num_defenders*d_wounds  
+        perc_wounds = df['damage'].mean()/count_wounds*100
+        damage_per_attack = df['damage'].mean()/num_attackers
+        st.text('Attackers deal approximately ' + str(perc_wounds)[:4] +'% of the total wounds as damage from ' + str(num_attackers) + ' attacks.')
+        st.text(str(num_defenders) + ' defender(s) take(s) ' + str(damage_per_attack)[:4] + ' damage per attack on average.')
         
-    with r_col2:
-        st.text('Wound rolls')
-        st.pyplot(df['wounds'].plot.hist(range = [0,num_attackers]).get_figure(), clear_figure= True)
-        st.text('Average wound rolls: ' + str(df['wounds'].mean()))
-
-    with r_col3:
-        st.text('Save rolls')
-        st.pyplot(df['saves'].plot.hist(range = [0,num_attackers]).get_figure(), clear_figure= True)
-        st.text('Average saves: ' + str(df['saves'].mean()))
+    elif att_type_select == att_type[1]: 
+        st.text('Melee not implemented yet, check back soon!')
         
-    with r_col4:
-        st.text('Invulnerable save rolls')
-        st.pyplot(df['invul'].plot.hist(range = [0,num_attackers]).get_figure(), clear_figure= True)
-        st.text('Average invul: ' + str(df['invul'].mean()))
-
-    with r_col5:
-        st.text('Final wounds')
-        st.pyplot(df['final_wounds'].plot.hist(range = [0,num_attackers]).get_figure(), clear_figure= True)
-        st.text('Average wounds: ' + str(df['final_wounds'].mean()))
-        
-    with r_col6:
-        st.text('Damage')
-        st.pyplot(df['damage'].plot.hist(range = [0,num_attackers*a_damage]).get_figure(), clear_figure= True)
-        st.text('Average damage: ' + str(df['damage'].mean()))
-        
-    #st.text(sim_avg_attack())
+else:
+    st.text('Please choose all parameters and hit Simulate in the sidebar!')
+    
