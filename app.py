@@ -10,6 +10,7 @@ v 0.1.1
 import streamlit as st
 import numpy as np
 import pandas as pd
+import matplotlib
 
 att_type = ['Ranged','Melee']
 a_reroll = ['None','Ones','All']
