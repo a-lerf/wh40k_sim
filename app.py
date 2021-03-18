@@ -26,18 +26,18 @@ else:
     skill_label = 'Weapon skill'
     
 num_attackers = st.sidebar.number_input('Number of attacks', min_value = 1, step = 1)
-num_defenders = st.sidebar.number_input('Number of defenders', min_value = 1, max_value = 10, step = 1)
+num_defenders = st.sidebar.number_input('Number of defenders', min_value = 1, step = 1)
 
 st.header('Attacker')
 
 a_col1, a_col2, a_col3, a_col4 = st.beta_columns(4) 
 
 with a_col1:
-    a_skill = st.number_input(skill_label, min_value = 1, max_value = 6, step = 1, value = 6)
+    a_skill = st.number_input(skill_label, min_value = 1, max_value = 6, step = 1, value = 3)
     a_hit_reroll = st.selectbox('Hit reroll', (a_reroll))
     
 with a_col2:
-    a_strength = st.number_input('Strength', min_value = 0, step = 1)
+    a_strength = st.number_input('Strength', min_value = 0, step = 1, value = 3)
     
 with a_col3:
     a_armor_p = st.number_input('Armor Piercing', min_value = -10, step = 1, value = 0)
@@ -56,7 +56,7 @@ st.header('Defender')
 d_col1, d_col2, d_col3, d_col4 = st.beta_columns(4)
 
 with d_col1:
-    d_tough = st.number_input('Toughness', min_value = 0, step = 1)
+    d_tough = st.number_input('Toughness', min_value = 0, step = 1, value = 1)
     d_wounds = st.number_input('Wounds', min_value = 1, step = 1)
     
 with d_col2:
